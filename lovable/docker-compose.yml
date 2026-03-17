@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Password@123
+      MYSQL_DATABASE: lovable
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: Password@123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  springboot-app:
+    build: ..
+    container_name: lovable-app
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/lovable
+      SPRING_DATASOURCE_USERNAME: appuser
+      SPRING_DATASOURCE_PASSWORD: Password@123
+
+volumes:
+  mysql-data:
