@@ -1,6 +1,7 @@
 package com.starter.lovable.entity;
 
 import com.starter.lovable.enums.SubscriptionStatus;
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,7 +11,8 @@ import java.time.Instant;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class Subscription
 {
     Long id;

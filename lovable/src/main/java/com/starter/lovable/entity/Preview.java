@@ -1,6 +1,7 @@
 package com.starter.lovable.entity;
 
 import com.starter.lovable.enums.PreviewStatus;
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +12,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
+@Builder
 public class Preview
 {
     Long id;

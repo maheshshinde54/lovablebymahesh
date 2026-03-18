@@ -1,6 +1,7 @@
 package com.starter.lovable.entity;
 
 import com.starter.lovable.enums.MessageRole;
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -8,9 +9,11 @@ import java.time.Instant;
 
 @Getter
 @Setter
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class ChatMessage {
     Long id;
     ChatSession chatSession;

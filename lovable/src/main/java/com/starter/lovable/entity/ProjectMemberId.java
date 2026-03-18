@@ -1,5 +1,6 @@
 package com.starter.lovable.entity;
 
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -8,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
+@Builder
 public class ProjectMemberId
 {
     Long projectId;

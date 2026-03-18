@@ -1,32 +1,19 @@
-version: '3.8'
-
 services:
-
-  mysql:
-    image: mysql:8
-    container_name: mysql-db
+  postgres:
+    image: postgres:15
+    container_name: lovable-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: Password@123
-      MYSQL_DATABASE: lovable
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: Password@123
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: Password@123
+      POSTGRES_DB: lovable
+      TZ: Asia/Kolkata
+    # This command handles the "Asia/Calcutta" error at the source
+    command: postgres -c timezone=Asia/Kolkata
     ports:
-      - "3306:3306"
+      - "9000:5432"
     volumes:
-      - mysql-data:/var/lib/mysql
-
-  springboot-app:
-    build: ..
-    container_name: lovable-app
-    depends_on:
-      - mysql
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/lovable
-      SPRING_DATASOURCE_USERNAME: appuser
-      SPRING_DATASOURCE_PASSWORD: Password@123
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  mysql-data:
+  postgres-data:
