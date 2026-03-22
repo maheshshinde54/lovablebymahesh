@@ -17,14 +17,17 @@ import java.time.Instant;
 @Entity
 @Builder
 @Table(name = "users")
-public class User
-{
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long Id;
     String email;
     String password;
-    String fullName;
-    //String avatarUrl;     we can use enum which will have fix set of avatars, their images where stored in the resource folder.
+    String name;
+    @Column(name = "\"avatarUrl\"")
+    String avatarUrl;     //we can use enum which will have fix set of avatars, their images where stored in the resource folder.
+
+    @Enumerated(EnumType.STRING)
     UserRole role;
     Boolean isEmailVerified;
 

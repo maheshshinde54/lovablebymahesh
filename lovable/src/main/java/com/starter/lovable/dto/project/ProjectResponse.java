@@ -9,6 +9,6 @@ public record ProjectResponse
          String name,
          Instant createdAt,
          Instant updatedAt,
-         UserProfileResponse response)
+         UserProfileResponse owner)
 {
 }

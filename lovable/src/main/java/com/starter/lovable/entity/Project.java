@@ -27,6 +27,8 @@ public class Project {
     @JoinColumn(name = "owner_id",nullable = false)
     User owner;
 
+    @Builder.Default // Required so builder doesn't make this 'null'
+    @Column(nullable = false)
     Boolean isPublic = false;
 
     @CreationTimestamp
@@ -34,7 +36,6 @@ public class Project {
 
     @UpdateTimestamp
     Instant updatedAt;
-
 
     Instant deletedAt;
 
