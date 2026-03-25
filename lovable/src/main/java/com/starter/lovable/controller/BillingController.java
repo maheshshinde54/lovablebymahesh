@@ -32,12 +32,10 @@ public class BillingController {
     }
 
     @PostMapping("/api/strip/checkout")
-    public ResponseEntity<CheckoutResponse> createCheckoutResponse(
-            @RequestBody CheckoutRequest request
-    )
+    public ResponseEntity<CheckoutResponse> createCheckoutResponse(@RequestBody CheckoutRequest request)
     {
         Long userId = 1L;
-        return ResponseEntity.ok(subscriptionService.createCheckoutSessionUrl(request ,userId));
+        return ResponseEntity.ok(subscriptionService.createCheckoutSessionUrl(request, userId));
     }
 
     @PostMapping("/api/strip/portal")

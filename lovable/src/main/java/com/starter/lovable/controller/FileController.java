@@ -15,23 +15,21 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/projects/{projectId}/files")
-public class FileController
-{
+public class FileController {
     private final FileService fileService;
 
     @GetMapping
     public ResponseEntity<List<FileNode>> getFileTree(@PathVariable Long projectId)
     {
         Long userId = 1L;
-        return ResponseEntity.ok(fileService.getFileTree(projectId,userId));
+        return ResponseEntity.ok(fileService.getFileTree(projectId, userId));
     }
 
     @GetMapping("/{*path}")
-    public ResponseEntity<FileContentResponse> getFile(
-            @PathVariable Long projectId,
-            @PathVariable String path
-            ){
+    public ResponseEntity<FileContentResponse> getFile(@PathVariable Long projectId,
+                                                       @PathVariable String path)
+    {
         Long userId = 1L;
-        return ResponseEntity.ok(fileService.getFile(projectId,path,userId));
+        return ResponseEntity.ok(fileService.getFile(projectId, path, userId));
     }
 }

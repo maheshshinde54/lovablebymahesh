@@ -6,11 +6,11 @@ import com.starter.lovable.dto.project.ProjectSummeryResponse;
 
 import java.util.List;
 
-public interface ProjectService
-{
+public interface ProjectService {
     List<ProjectSummeryResponse> getUserProjects(Long userId);
 
-    ProjectResponse getProjectById(Long id);
+    ProjectResponse getUserProjectById(Long id,
+                                       Long userId);
 
     ProjectResponse createProject(ProjectRequest request,
                                   Long userId);

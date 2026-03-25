@@ -1,6 +1,5 @@
 package com.starter.lovable.enums;
 
-public enum PreviewStatus
-{
+public enum PreviewStatus {
     CREATED, RUNNING, FAILED, TERMINATED;
 }

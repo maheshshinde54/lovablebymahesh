@@ -1,6 +1,5 @@
 package com.starter.lovable.enums;
 
-public enum SubscriptionStatus
-{
+public enum SubscriptionStatus {
     ACTIVE, TRIALING, CANCELED, PAST_DUE, INCOMPLETED;
 }

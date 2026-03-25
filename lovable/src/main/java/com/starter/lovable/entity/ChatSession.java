@@ -1,6 +1,5 @@
 package com.starter.lovable.entity;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

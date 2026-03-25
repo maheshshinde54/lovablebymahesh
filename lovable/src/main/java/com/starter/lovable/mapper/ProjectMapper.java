@@ -8,11 +8,12 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface ProjectMapper
-{
-    ProjectResponse toProjectResponse (Project project);
+public interface ProjectMapper {
+    ProjectResponse toProjectResponse(Project project);
 
     List<ProjectSummeryResponse> toListOfProjects(List<Project> projects);
 
-    ProjectSummeryResponse toProjectSummeryResponse (Project project);
+    ProjectSummeryResponse toProjectSummeryResponse(Project project);
+
+
 }

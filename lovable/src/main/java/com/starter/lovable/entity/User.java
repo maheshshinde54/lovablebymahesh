@@ -20,12 +20,10 @@ import java.time.Instant;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
+    Long id;
     String email;
     String password;
     String name;
-    @Column(name = "\"avatarUrl\"")
-    String avatarUrl;     //we can use enum which will have fix set of avatars, their images where stored in the resource folder.
 
     @Enumerated(EnumType.STRING)
     UserRole role;

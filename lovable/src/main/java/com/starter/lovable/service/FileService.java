@@ -5,8 +5,7 @@ import com.starter.lovable.dto.project.FileNode;
 
 import java.util.List;
 
-public interface FileService
-{
+public interface FileService {
     List<FileNode> getFileTree(Long projectId,
                                Long userId);
 

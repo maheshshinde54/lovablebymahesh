@@ -24,7 +24,7 @@ public class Project {
     String name;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id",nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     User owner;
 
     @Builder.Default // Required so builder doesn't make this 'null'

@@ -1,7 +1,7 @@
 package com.starter.lovable.entity;
 
 import com.starter.lovable.enums.ProjectRole;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,17 +9,31 @@ import java.time.Instant;
 
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ProjectMember
-{
+@Table(name = "project_members")
+public class ProjectMember {
+    @EmbeddedId
     ProjectMemberId id;
-    Project  project;
+
+    @ManyToOne
+    @MapsId("projectId")
+    Project project;
+
+    @ManyToOne
+    @MapsId("userId")
     User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     ProjectRole projectRole;
+
     Instant invitedAt;
+
     Instant acceptedAt;
 
 }

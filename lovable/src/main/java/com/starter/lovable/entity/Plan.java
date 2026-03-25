@@ -1,6 +1,5 @@
 package com.starter.lovable.entity;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -8,10 +7,9 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Plan
-{
+public class Plan {
     Long id;
     String name;
     String stripePriceId;

@@ -6,6 +6,5 @@ public record PlanResponse(Long id,
                            Integer maxTokensPerDay,
                            Integer maxPreviews,
                            Boolean unlimitedAi,
-                           Boolean isActive
-) {
+                           Boolean isActive) {
 }
