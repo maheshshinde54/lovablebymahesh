@@ -12,22 +12,24 @@ import java.util.Optional;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-
+    // 1. Get all projects where the user is a member (Owner, Editor, or Viewer)
     @Query("""
             SELECT p FROM Project p
-            WHERE p.deletedAt IS NULL
-            AND (p.owner.id = :userId OR p.isPublic = true)
+            JOIN ProjectMember pm ON pm.project.id = p.id
+            WHERE pm.user.id = :userId
+            AND p.deletedAt IS NULL
             ORDER BY p.updatedAt DESC
             """
     )
     List<Project> findAllAccessibleProjectsByUser(@Param("userId") Long userId);
 
+    // 2. Get a specific project ONLY if the user is a member
     @Query("""
-            SELECT p FROM Project p 
-            LEFT JOIN FETCH p.owner 
-            WHERE p.id = :projectId 
-            AND p.deletedAt IS NULL 
-            AND p.owner.id = :userId
+            SELECT p FROM Project p
+            JOIN ProjectMember pm ON pm.project.id = p.id
+            WHERE p.id = :projectId
+            AND pm.user.id = :userId
+            AND p.deletedAt IS NULL
             """
     )
     Optional<Project> findAllAccessibleProjectsById(@Param("projectId") Long projectId,

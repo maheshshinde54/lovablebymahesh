@@ -1,6 +1,5 @@
 package com.starter.lovable.entity;
 
-import com.starter.lovable.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,13 +20,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String email;
+    String userName;
     String password;
     String name;
-
-    @Enumerated(EnumType.STRING)
-    UserRole role;
-    Boolean isEmailVerified;
 
     @CreationTimestamp
     Instant createdAt;

@@ -1,6 +1,10 @@
 package com.starter.lovable.dto.auth;
 
-public record SignupRequest(String email,
-                            String name,
-                            String password) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record SignupRequest(@Email @NotBlank String userName,
+                            @NotBlank @Size(min = 4, max = 15) String name,
+                            @NotBlank @Size(min = 4, max = 15) String password) {
 }

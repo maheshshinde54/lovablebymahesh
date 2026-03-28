@@ -1,18 +1,17 @@
 package com.starter.lovable.entity;
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Embeddable
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
-public class ProjectMemberId {
-    Long projectId;
-    Long userId;
-
+@AllArgsConstructor
+public class ProjectMemberId implements Serializable {
+    private Long projectId;
+    private Long userId;
 }
