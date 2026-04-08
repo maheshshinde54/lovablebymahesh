@@ -12,12 +12,14 @@ import java.util.Optional;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    // 1. Get all projects where the user is a member (Owner, Editor, or Viewer)
     @Query("""
             SELECT p FROM Project p
-            JOIN ProjectMember pm ON pm.project.id = p.id
-            WHERE pm.user.id = :userId
-            AND p.deletedAt IS NULL
+            WHERE p.deletedAt IS NULL
+            AND EXISTS(
+                       SELECT 1 FROM ProjectMember pm
+                       WHERE pm.id.userId = :userId
+                       AND  pm.id.projectId = p.id
+                       )
             ORDER BY p.updatedAt DESC
             """
     )
@@ -26,10 +28,15 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     // 2. Get a specific project ONLY if the user is a member
     @Query("""
             SELECT p FROM Project p
-            JOIN ProjectMember pm ON pm.project.id = p.id
             WHERE p.id = :projectId
+                        AND p.deletedAt IS NULL
             AND pm.user.id = :userId
             AND p.deletedAt IS NULL
+            AND EXISTS(
+                       SELECT 1 FROM ProjectMember pm
+                       WHERE pm.id.userId = :userId
+                       AND  pm.id.projectId = :projectId
+                       )
             """
     )
     Optional<Project> findAllAccessibleProjectsById(@Param("projectId") Long projectId,

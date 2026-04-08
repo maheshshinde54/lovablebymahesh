@@ -13,6 +13,7 @@ import com.starter.lovable.mapper.ProjectMapper;
 import com.starter.lovable.respository.ProjectMemberRepository;
 import com.starter.lovable.respository.ProjectRepository;
 import com.starter.lovable.respository.UserRepository;
+import com.starter.lovable.security.AuthUtil;
 import com.starter.lovable.service.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -32,27 +33,29 @@ public class ProjectServiceImpl implements ProjectService {
     UserRepository userRepository;
     ProjectMapper projectMapper;
     ProjectMemberRepository projectMemberRepository;
+    AuthUtil authUtil;
 
     @Override
-    public List<ProjectSummeryResponse> getUserProjects(Long userId)
+    public List<ProjectSummeryResponse> getUserProjects()
     {
+        Long userId = authUtil.getCurrentUserId();
         List<Project> getAllProjectDetails = projectRepository.findAllAccessibleProjectsByUser(userId);
         return projectMapper.toListOfProjects(getAllProjectDetails);
 
     }
 
     @Override
-    public ProjectResponse getUserProjectById(Long id,
-                                              Long userId)
+    public ProjectResponse getUserProjectById(Long id)
     {
-        Project project = getAccessibleProjectById(id, userId);
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(id);
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public ProjectResponse createProject(ProjectRequest request,
-                                         Long userId)
+    public ProjectResponse createProject(ProjectRequest request)
     {
+        Long userId = authUtil.getCurrentUserId();
         User owner = userRepository.findById(userId)
                                    .orElseThrow(() -> new ResourceNotFoundException("User", userId.toString()));
         Project project = Project.builder()
@@ -76,21 +79,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse updateProject(Long id,
-                                         ProjectRequest request,
-                                         Long userId)
+                                         ProjectRequest request)
     {
-
-        Project project = getAccessibleProjectById(id, userId);
+        Project project = getAccessibleProjectById(id);
 
         project.setName(request.name());
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public Void softDelete(Long id,
-                           Long userId)
+    public Void softDelete(Long id)
     {
-        Project project = getAccessibleProjectById(id, userId);
+        Project project = getAccessibleProjectById(id);
 
         project.setDeletedAt(Instant.now());
         projectRepository.save(project);
@@ -99,9 +99,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     //Internal Function
-    public Project getAccessibleProjectById(Long projectId,
-                                            Long userId)
+    public Project getAccessibleProjectById(Long projectId)
     {
+        Long userId = authUtil.getCurrentUserId();
         return projectRepository.findAllAccessibleProjectsById(projectId, userId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Project", projectId.toString()));
     }
