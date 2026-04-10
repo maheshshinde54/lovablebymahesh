@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -34,26 +35,25 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 
 
     @Override
-    public List<MemberResponse> getProjectMembers(Long projectId,
-                                                  Long userId)
+    @PreAuthorize("@security.canViewMembers(#projectId)")
+    public List<MemberResponse> getProjectMembers(Long projectId, Long userId)
     {
         Project project = getAccessibleProjectById(projectId, userId);
 
         return projectMemberRepository.findByIdProjectId(projectId)
-                                                         .stream()
-                                                         .map(projectMemberMapper::toProjectMemberResponseFromMember)
+                                      .stream()
+                                      .map(projectMemberMapper::toProjectMemberResponseFromMember)
                                       .toList();
 
     }
 
     @Override
-    public MemberResponse inviteMember(Long projectId,
-                                       InviteMemberRequest request,
-                                       Long userId)
+    @PreAuthorize("@security.canManageMembers(#projectId)")
+    public MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId)
     {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        User invitee = userRepository.findByUserName(request.email())
+        User invitee = userRepository.findByUserName(request.userName())
                                      .orElseThrow();
         if (invitee.getId()
                    .equals(userId))
@@ -80,10 +80,8 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse updateMemberRole(Long projectId,
-                                           Long memberId,
-                                           UpdateMemberRoleRequest request,
-                                           Long userId)
+    @PreAuthorize("@security.canManageMembers(#projectId)")
+    public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request, Long userId)
     {
         Project project = getAccessibleProjectById(projectId, userId);
 
@@ -96,9 +94,8 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
     }
 
     @Override
-    public void removeProjectMember(Long projectId,
-                                    Long memberId,
-                                    Long userId)
+    @PreAuthorize("@security.canManageMembers(#projectId)")
+    public void removeProjectMember(Long projectId, Long memberId, Long userId)
     {
         // 1. Get project and verify the requester is the OWNER
         Project project = getAccessibleProjectById(projectId, userId);
@@ -123,8 +120,7 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
     }
 
     //Internal Function
-    public Project getAccessibleProjectById(Long projectId,
-                                            Long userId)
+    public Project getAccessibleProjectById(Long projectId, Long userId)
     {
         return projectRepository.findAllAccessibleProjectsById(projectId, userId)
                                 .orElseThrow();

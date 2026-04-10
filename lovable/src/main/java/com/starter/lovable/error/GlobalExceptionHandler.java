@@ -25,22 +25,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleResourceNotFoundException(ResourceNotFoundException ex)
     {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getResourceName()+" with id "+ex.getResourceId()+" not found.");
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getResourceName() + " with id " + ex.getResourceId() + " not found.");
         log.error(apiError.toString(), ex);
         return ResponseEntity.status(apiError.status())
                              .body(apiError);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleInputValidationError(MethodArgumentNotValidException exception)
     {
         List<ApiFiledError> errorList = exception.getBindingResult()
-                                            .getFieldErrors()
-                                            .stream()
-                                            .map(exc -> new ApiFiledError(exc.getField(), exc.getDefaultMessage()))
-                                            .toList();
+                                                 .getFieldErrors()
+                                                 .stream()
+                                                 .map(exc -> new ApiFiledError(exc.getField(), exc.getDefaultMessage()))
+                                                 .toList();
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Input validation failed", errorList);
-        log.error(apiError.toString(),exception);
-        return ResponseEntity.status(apiError.status()).body(apiError);
+        log.error(apiError.toString(), exception);
+        return ResponseEntity.status(apiError.status())
+                             .body(apiError);
     }
 
 }

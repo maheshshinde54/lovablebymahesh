@@ -12,7 +12,7 @@ public interface ProjectMemberMapper {
     @Mapping(target = "projectRole", constant = "OWNER")
     MemberResponse toProjectMemberResponseFromOwner(User owner);
 
-    @Mapping(target = "userId",source ="user.id")
+    @Mapping(target = "userId", source = "user.id")
     MemberResponse toProjectMemberResponseFromMember(ProjectMember projectMember);
 
 

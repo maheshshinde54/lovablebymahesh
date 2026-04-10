@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     UserRepository userRepository;
+
     @Override
     public UserProfileResponse getProfile(Long userId)
     {
