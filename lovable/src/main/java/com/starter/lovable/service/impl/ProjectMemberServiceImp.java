@@ -11,6 +11,7 @@ import com.starter.lovable.mapper.ProjectMemberMapper;
 import com.starter.lovable.respository.ProjectMemberRepository;
 import com.starter.lovable.respository.ProjectRepository;
 import com.starter.lovable.respository.UserRepository;
+import com.starter.lovable.security.AuthUtil;
 import com.starter.lovable.service.ProjectMemberService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -32,12 +33,14 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
     ProjectRepository projectRepository;
     ProjectMemberMapper projectMemberMapper;
     UserRepository userRepository;
+    AuthUtil authUtil;
 
 
     @Override
     @PreAuthorize("@security.canViewMembers(#projectId)")
     public List<MemberResponse> getProjectMembers(Long projectId, Long userId)
     {
+
         Project project = getAccessibleProjectById(projectId, userId);
 
         return projectMemberRepository.findByIdProjectId(projectId)

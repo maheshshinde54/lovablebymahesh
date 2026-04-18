@@ -35,6 +35,8 @@ public class User implements UserDetails {
     Instant updatedAt;
     Instant deletedAt;
 
+    @Column(unique = true)
+    String stripeCustomerId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
@@ -47,4 +49,6 @@ public class User implements UserDetails {
     {
         return userName;
     }
+
+
 }

@@ -31,7 +31,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getUserProjectById(id));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ProjectResponse> createProject(@RequestBody @Valid ProjectRequest request)
     {
 

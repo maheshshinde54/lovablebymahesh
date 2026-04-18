@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -18,33 +19,40 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final AuthUtil authUtil;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException
     {
-        log.info("Incoming request: {} ", request.getRequestURI());
-
-        final String requestHearToken = request.getHeader("Authorization");
-        if (requestHearToken == null || !requestHearToken.startsWith("Bearer "))
+        try
         {
+            log.info("Incoming request: {} ", request.getRequestURI());
+
+            final String requestHearToken = request.getHeader("Authorization");
+            if (requestHearToken == null || !requestHearToken.startsWith("Bearer "))
+            {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String jwtToken = requestHearToken.split("Bearer ")[1];
+
+            JwtUserPrincipal user = authUtil.verifyAccessToken(jwtToken);
+            if (user != null && SecurityContextHolder.getContext()
+                                                     .getAuthentication() == null)
+            {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.authorities());
+
+                SecurityContextHolder.getContext()
+                                     .setAuthentication(authenticationToken);
+            }
             filterChain.doFilter(request, response);
-            return;
         }
-
-        String jwtToken = requestHearToken.split("Bearer ")[1];
-
-        JwtUserPrincipal user = authUtil.verifyAccessToken(jwtToken);
-        if (user != null && SecurityContextHolder.getContext()
-                                                 .getAuthentication() == null)
+        catch (Exception e)
         {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.authorities());
-
-            SecurityContextHolder.getContext()
-                                 .setAuthentication(authenticationToken);
+            handlerExceptionResolver.resolveException(request,response,null,e);
         }
-        filterChain.doFilter(request, response);
-
 
     }
 }

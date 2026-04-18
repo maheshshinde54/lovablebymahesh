@@ -25,10 +25,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
     {
-        httpSecurity.csrf(csrf -> csrf.disable()) // Correct way to disable CSRF in 3.3+
+        httpSecurity.csrf(csrf -> csrf.disable())
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**")
-                                                       .permitAll() // Added the missing permission
+                    .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**","/api/billing/webhooks/**")
+                                                       .permitAll()
                                                        .anyRequest()
                                                        .authenticated())
                     .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

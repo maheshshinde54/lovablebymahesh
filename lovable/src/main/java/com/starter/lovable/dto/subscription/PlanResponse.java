@@ -5,6 +5,7 @@ public record PlanResponse(Long id,
                            String stripePriceId,
                            Integer maxTokensPerDay,
                            Integer maxPreviews,
+                           Integer maxProjects,
                            Boolean unlimitedAi,
                            Boolean isActive) {
 }

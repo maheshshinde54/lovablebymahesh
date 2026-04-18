@@ -8,6 +8,7 @@ import com.starter.lovable.entity.ProjectMember;
 import com.starter.lovable.entity.ProjectMemberId;
 import com.starter.lovable.entity.User;
 import com.starter.lovable.enums.ProjectRole;
+import com.starter.lovable.error.BadRequestException;
 import com.starter.lovable.error.ResourceNotFoundException;
 import com.starter.lovable.mapper.ProjectMapper;
 import com.starter.lovable.respository.ProjectMemberRepository;
@@ -15,6 +16,7 @@ import com.starter.lovable.respository.ProjectRepository;
 import com.starter.lovable.respository.UserRepository;
 import com.starter.lovable.security.AuthUtil;
 import com.starter.lovable.service.ProjectService;
+import com.starter.lovable.service.SubscriptionService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +37,12 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectMapper projectMapper;
     ProjectMemberRepository projectMemberRepository;
     AuthUtil authUtil;
+    SubscriptionService subscriptionService;
 
     @Override
     public List<ProjectSummeryResponse> getUserProjects()
     {
+
         Long userId = authUtil.getCurrentUserId();
         List<Project> getAllProjectDetails = projectRepository.findAllAccessibleProjectsByUser(userId);
         return projectMapper.toListOfProjects(getAllProjectDetails);
@@ -58,8 +62,14 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectResponse createProject(ProjectRequest request)
     {
         Long userId = authUtil.getCurrentUserId();
-        User owner = userRepository.findById(userId)
-                                   .orElseThrow(() -> new ResourceNotFoundException("User", userId.toString()));
+//        User owner = userRepository.findById(userId)
+//                                   .orElseThrow(() -> new ResourceNotFoundException("User", userId.toString()));
+
+        User owner = userRepository.getReferenceById(userId);
+        if(!subscriptionService.canCreateNewProject())
+        {
+            throw new BadRequestException("User can not create a new project with current plan. Please upgrade plan");
+        }
         Project project = Project.builder()
                                  .name(request.name())
                                  .build();
