@@ -1,0 +1,15 @@
+<configuration>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %-5level [%thread] %logger{36} requestId=%X{requestId:-N/A} userId=%X{userId:-anonymous} method=%X{method:-UNKNOWN} path=%X{path:-UNKNOWN} event=%X{event:-none} step=%X{step:-none} - %msg%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.starter.lovable" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

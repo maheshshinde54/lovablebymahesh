@@ -27,11 +27,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     {
         try
         {
-            log.info("Incoming request: {} ", request.getRequestURI());
+            log.info("JwtAuthFilter.doFilterInternal incoming request {}", request.getRequestURI());
 
             final String requestHearToken = request.getHeader("Authorization");
             if (requestHearToken == null || !requestHearToken.startsWith("Bearer "))
             {
+                log.debug("JwtAuthFilter.doFilterInternal missing or invalid Authorization header");
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -42,6 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (user != null && SecurityContextHolder.getContext()
                                                      .getAuthentication() == null)
             {
+                log.debug("JwtAuthFilter.doFilterInternal authenticated userId={}", user.userId());
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.authorities());
 
                 SecurityContextHolder.getContext()
@@ -51,6 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         catch (Exception e)
         {
+            log.warn("JwtAuthFilter.doFilterInternal caught exception: {}", e.getMessage());
             handlerExceptionResolver.resolveException(request,response,null,e);
         }
 

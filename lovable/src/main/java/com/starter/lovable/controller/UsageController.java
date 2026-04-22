@@ -4,11 +4,13 @@ import com.starter.lovable.dto.subscription.PlanLimitResponse;
 import com.starter.lovable.dto.subscription.UsageTodayResponse;
 import com.starter.lovable.service.UsageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/usage")
@@ -18,6 +20,7 @@ public class UsageController {
     @GetMapping("/today")
     public ResponseEntity<UsageTodayResponse> getTodayUsage()
     {
+        log.info("UsageController.getTodayUsage called");
         Long userId = 1L;
         return ResponseEntity.ok(usageService.getTodayUsageOfUser(userId));
     }
@@ -25,6 +28,7 @@ public class UsageController {
     @GetMapping("/limits")
     public ResponseEntity<PlanLimitResponse> getPlanLimits()
     {
+        log.info("UsageController.getPlanLimits called");
         Long userId = 1L;
         return ResponseEntity.ok(usageService.getCurrentSubscriptionLimitOfUser(userId));
     }

@@ -60,47 +60,44 @@ public class BillingController {
 
     @PostMapping("/webhooks/payment")
     public ResponseEntity<String> handlePaymentWebhooks(@RequestBody String payload, @RequestHeader("Stripe-Signature") String signHeader)
-    {log.info("Payload received: {}", payload);
-        try
-        {
-            Event event = Webhook.constructEvent(payload,signHeader,webhookSecret);
+    {
+        log.info("BillingController.handlePaymentWebhooks called");
+        log.debug("Stripe webhook raw payload: {}", payload);
+
+        try {
+            Event event = Webhook.constructEvent(payload, signHeader, webhookSecret);
             EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
             StripeObject stripeObject = null;
 
-            if (deserializer.getObject().isPresent()) { // happy case
+            if (deserializer.getObject().isPresent()) {
                 stripeObject = deserializer.getObject().get();
             } else {
-                // Fallback: Deserialize from raw JSON
                 try {
                     stripeObject = deserializer.deserializeUnsafe();
                     if (stripeObject == null) {
-                        log.warn("Failed to deserialize webhook object for event: {}", event.getType());
+                        log.warn("BillingController.handlePaymentWebhooks failed to deserialize event {}", event.getType());
                         return ResponseEntity.ok().build();
                     }
                 } catch (Exception e) {
-
-                    log.error("Unsafe deserialization failed for event {}: {}", event.getType(), e.getMessage());
+                    log.error("BillingController.handlePaymentWebhooks unsafe deserialization failed for event {}: {}", event.getType(), e.getMessage());
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Deserialization failed");
                 }
             }
 
-            // Now extract metadata only if it's a Checkout Session
             Map<String, String> metadata = new HashMap<>();
             if (stripeObject instanceof Session session) {
                 metadata = session.getMetadata();
             }
 
-            // Pass to your processor
+            log.info("BillingController.handlePaymentWebhooks dispatching event={}", event.getType());
             paymentProcessor.handleWebhookEvent(event.getType(), stripeObject, metadata);
             return ResponseEntity.ok().build();
-
-        } catch (SignatureVerificationException e)
-        {log.error("Signature verification failed!");
-            log.error("Header: {}", signHeader);
-            log.error("Secret being used: {}", webhookSecret);
+        } catch (SignatureVerificationException e) {
+            log.error("BillingController.handlePaymentWebhooks signature verification failed");
+            log.debug("Stripe signature header: {}", signHeader);
+            log.debug("Webhook signing secret length: {}", webhookSecret != null ? webhookSecret.length() : 0);
             throw new RuntimeException(e);
         }
-
     }
 
 }

@@ -13,12 +13,14 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -34,24 +36,31 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signup(SignupRequest request)
     {
+        log.info("AuthServiceImpl.signup called");
+        log.debug("SignupRequest payload: {}", request);
         userRepository.findByUserName(request.userName())
                       .ifPresent(user ->
                       {
+                          log.warn("AuthServiceImpl.signup rejected duplicate username={}", request.userName());
                           throw new BadRequestException("User already exist with userName " + request.userName());
                       });
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.password()));
         user = userRepository.save(user);
+        log.info("AuthServiceImpl.signup user saved username={}", user.getUsername());
         String token = authUtil.generateAccessToken(user);
+        log.debug("AuthServiceImpl.signup generated token for username={}", user.getUsername());
         return new AuthResponse(token, userMapper.toUserProfileResponse(user));
     }
 
     @Override
     public AuthResponse login(LoginRequest request)
     {
+        log.info("AuthServiceImpl.login called for username={}", request.userName());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.userName(), request.password()));
         User user = (User) authentication.getPrincipal();
         String token = authUtil.generateAccessToken(user);
+        log.info("AuthServiceImpl.login succeeded for username={}", user.getUsername());
         return new AuthResponse(token, userMapper.toUserProfileResponse(user));
     }
 
