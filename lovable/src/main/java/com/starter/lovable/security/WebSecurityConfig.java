@@ -32,6 +32,8 @@ public class WebSecurityConfig {
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**","/api/billing/webhooks/**")
                                                        .permitAll()
+                            .requestMatchers("/api/chat/streams", "/api.chat/streams")
+                            .permitAll()
                                                        .anyRequest()
                                                        .authenticated())
                     .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

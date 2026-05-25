@@ -34,7 +34,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     PlanRepository planRepository;
     ProjectRepository projectRepository;
     ProjectMemberRepository projectMemberRepository;
-    Integer FREE_TIER_PROJECT_ALLOWED=1;
+    Integer FREE_TIER_PROJECT_ALLOWED = 100;
 
 
     @Override
